@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:insert="fragments/html-head :: html-head">
+</head>
+<body>
+<h1>The Greeting Page</h1>
+<turbo-frame id="greeting_frame">
+    <p><span id="hello">Hello</span>, <span id="person" th:text="${person}">Jane Citizen</span>!</p>
+</turbo-frame>
+</body>
+</html>

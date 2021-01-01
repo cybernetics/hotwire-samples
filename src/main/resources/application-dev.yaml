@@ -1,0 +1,21 @@
+spring:
+  messages:
+    cache-duration: 0
+
+  # Templates reloading during development
+  thymeleaf:
+    prefix: file:src/main/resources/templates/
+    cache: false
+
+  # Static resources reloading during development
+  web:
+    resources:
+      cache:
+        period: 0
+        cachecontrol:
+          no-cache: true
+      static-locations: file:src/main/resources/static/
+
+logging:
+  level:
+    org.springframework: ERROR

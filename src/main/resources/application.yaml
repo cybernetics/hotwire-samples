@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: dev
+
+  thymeleaf:
+#    servlet:
+#      content-type: text/html; turbo-stream
+
+logging:
+  level:
+    org.springframework: INFO
