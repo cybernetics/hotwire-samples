@@ -23,14 +23,13 @@
 <section>
     <h1>Pings section</h1>
     <h2>Turbo Stream</h2>
-    <form action="/pinger" method="post">
-        <button type="submit">Ping 1.1.1.1</button>
-    </form>
-    <div>
-        <p>Ping times</p>
-        <ol id="pings">
-        </ol>
-    </div>
+<form action="/pinger" method="post" data-turbo-stream>
+    <button type="submit">Ping 1.1.1.1</button>
+</form>
+<div>
+    <p>Ping times</p>
+    <ol id="pings"></ol>
+</div>
 </section>
 
 </body>

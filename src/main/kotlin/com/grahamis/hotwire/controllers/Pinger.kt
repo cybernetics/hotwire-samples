@@ -8,9 +8,8 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
-import java.net.InetAddress
 import java.io.IOException
-
+import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Socket
 
@@ -28,15 +27,20 @@ class Pinger {
         headers.contentType = CustomMediaType.TURBO_STREAM
 
         val ping = ping()
-        val pingString = if (ping < 0) "timeout" else "${ping} ms"
+        val pingTime = if (ping < 0) "timeout" else "$ping ms"
 
-        return ResponseEntity.status(201).headers(headers).body("""
-            <turbo-stream action="append" target="pings">
-              <template>
-                <li>${pingString}</li>
-              </template>
-            </turbo-stream>
-        """.trimIndent())
+        return ResponseEntity
+            .ok()
+            .contentType(CustomMediaType.TURBO_STREAM)
+            .body(
+                """
+<turbo-stream action="append" target="pings">
+  <template>
+    <li>$pingTime</li>
+  </template>
+</turbo-stream>
+                """.trimIndent()
+            )
     }
 
     fun ping(): Long {

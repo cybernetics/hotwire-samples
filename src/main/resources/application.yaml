@@ -2,9 +2,27 @@ spring:
   profiles:
     active: dev
 
-  thymeleaf:
-#    servlet:
-#      content-type: text/html; turbo-stream
+#  thymeleaf:
+#    reactive:
+#      media-types:
+#        - text/html;turbo-stream=* # com.grahamis.CustomMediaType.TURBO_STREAM
+##        # these are duplicated from org.thymeleaf.spring5.view.reactive.ThymeleafReactiveViewResolver::SUPPORTED_MEDIA_TYPES
+##        # because org.springframework.boot.autoconfigure.thymeleaf.ThymeleafReactiveViewResolver doesn't prepend
+##        # these properties to the statically set values in ThymeleafReactiveViewResolver, it replaces them :-/
+#        - text/html
+#        - application/xhtml+xml
+#        - application/xml
+#        - text/xml
+#        - application/rss+xml
+#        - application/atom+xml
+#        - text/javascript
+#        - text/ecmascript
+#        - application/javascript
+#        - application/ecmascript
+#        - application/json
+#        - text/css
+#        - text/plain
+#        - text/event-stream
 
 logging:
   level:
