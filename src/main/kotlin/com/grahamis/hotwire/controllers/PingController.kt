@@ -1,6 +1,8 @@
 package com.grahamis.hotwire.controllers
 
 import com.grahamis.CustomMediaType
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -9,16 +11,23 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import java.io.IOException
-import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Socket
 
 
-private val address = InetAddress.getByName("1.1.1.1")
-
 @RequestMapping("/pinger")
 @Controller
-class Pinger {
+class PingController {
+    @Value("\${ping.hostname:127.0.0.1}")
+    private val hostname: String = "127.0.0.1"
+
+    @Value("\${ping.port:8080}")
+    private val port: Int = 8080
+
+    // Test will provide a mock bean, otherwise ping() will self-create a Socket
+    @Autowired(required = false)
+    private var socket: Socket? = null
+
     @PostMapping(produces = ["${MediaType.TEXT_HTML_VALUE};turbo-stream", MediaType.TEXT_HTML_VALUE])
     @ResponseBody
     fun pinger(): ResponseEntity<String> {
@@ -44,22 +53,30 @@ class Pinger {
     }
 
     fun ping(): Long {
+        socket = socket ?: Socket()
+
         val (reachable, time) = executeAndMeasureTimeMillis {
             try {
-                Socket().use { socket ->
-                    socket.connect(InetSocketAddress(address, 443), 0)
+                socket!!.use {
+                    it.connect(InetSocketAddress(hostname, port), 1000)
                     true
                 }
             } catch (_: IOException) {
                 false
             }
         }
+
+        /**
+         * The socket has been closed and it can only be used once
+         */
+        socket = null
+
         return if (reachable) time else -1
     }
 
-    private inline fun <R> executeAndMeasureTimeMillis(block: () -> R): Pair<R, Long> {
+    private inline fun <R> executeAndMeasureTimeMillis(fn: () -> R): Pair<R, Long> {
         val start = System.currentTimeMillis()
-        val result = block()
+        val result = fn()
         return result to (System.currentTimeMillis() - start)
     }
 }

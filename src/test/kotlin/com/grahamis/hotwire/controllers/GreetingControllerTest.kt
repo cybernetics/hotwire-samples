@@ -1,5 +1,6 @@
 package com.grahamis.hotwire.controllers
 
+import com.grahamis.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,8 +33,4 @@ class GreetingControllerTest {
 
         response.expectBody().elementOfId(personElement).isEqualTo(person)
     }
-
-
-    private fun WebTestClient.getResponse(uri: URI) = get().uri(uri).exchange()
-    private fun WebTestClient.BodyContentSpec.elementOfId(id: String, tag: String = "*") = xpath("//${tag}[@id='${id}']")
 }
