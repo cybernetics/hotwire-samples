@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.MockReset
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.springframework.test.util.ReflectionTestUtils
 import org.springframework.test.web.reactive.server.WebTestClient
 import java.io.IOException
 import java.net.Socket
@@ -35,6 +36,7 @@ class PingControllerTest {
     fun shouldPing() {
         mockSocketConnects()
         val controller = PingController()
+        ReflectionTestUtils.setField(controller, "port", 0)
         Assertions.assertThat(controller.ping(socket).block()).isGreaterThanOrEqualTo(0)
     }
 
@@ -43,6 +45,7 @@ class PingControllerTest {
     fun shouldTimeout() {
         mockSocketTimeout()
         val controller = PingController()
+        ReflectionTestUtils.setField(controller, "port", 0)
         Assertions.assertThat(controller.ping(socket).block()).isEqualTo(-1)
     }
 

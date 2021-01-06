@@ -1,7 +1,6 @@
 package com.grahamis.hotwire.controllers
 
 import com.grahamis.CustomMediaType
-import kotlinx.coroutines.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
@@ -61,18 +60,20 @@ class PingController {
     }
 
     @ExperimentalTime
-    fun ping(socket: Socket): Mono<Long> = Mono.create {
-        try {
-            it.success(measureTime {
-                socket.connect(InetSocketAddress(hostname, port), 10)
-                if (hostname == "127.0.0.1") {
-                    val sleep = Random.nextLong().absoluteValue % 10
-                    if (sleep % 5 == 0L) throw IOException() // force some timeouts now and then
-                    Thread.sleep(sleep)
-                }
-            }.toLongMilliseconds())
-        } catch (e: IOException) {
-            it.success(-1)
+    fun ping(socket: Socket): Mono<Long> = Mono.create { sink ->
+        socket.use {
+            try {
+                sink.success(measureTime {
+                    socket.connect(InetSocketAddress(hostname, port))
+                    if (port != 0) { // don't do randomness fun for unit test scenarios
+                        val sleep = Random.nextLong().absoluteValue % 10
+                        if (sleep % 5 == 0L) throw IOException() // force some timeouts now and then
+                        Thread.sleep(sleep)
+                    }
+                }.toLongMilliseconds())
+            } catch (e: IOException) {
+                sink.success(-1)
+            }
         }
     }
 }
