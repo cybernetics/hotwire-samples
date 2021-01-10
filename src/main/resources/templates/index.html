@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="${lang}"
       th:lang="${lang}" th:with="lang=${#locale.language}"
-      xmlns="http://www.w3.org/1999/xhtml">
-<head th:insert="fragments/html-head :: html-head">
-    <title>Home</title>
-</head>
+      xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/html-head :: html-head}"></head>
+<head><title>Home</title></head>
 <body>
 <section>
     <h1>Greeting section</h1>
@@ -14,22 +13,33 @@
         <a href="/greeting/?person=Josh">Click here to greet Josh</a>
     </turbo-frame>
 
+    <h2>Turbo Drive</h2>
+    <div>
+        <a href="/greeting/?person=Josh">Click here to greet Josh (fast)</a>
+    </div>
+    <div>
+        <a href="/greeting/?person=Josh&sleep=true">Click here to greet Josh (slow)</a>
+    </div>
+
     <h2>Regular</h2>
     <div>
-        <a href="/greeting/?person=Josh">Click here to greet Josh</a>
+        <a href="/greeting/?person=Josh" data-turbo="false">Click here to greet Josh (fast)</a>
+    </div>
+    <div>
+        <a href="/greeting/?person=Josh&sleep=true" data-turbo="false">Click here to greet Josh (slow)</a>
     </div>
 </section>
 
 <section>
     <h1>Pings section</h1>
     <h2>Turbo Stream</h2>
-<form action="/pinger" method="post" data-turbo-stream>
-    <button type="submit">Ping</button>
-</form>
-<div>
-    <p>Ping times</p>
-    <ol id="pings"></ol>
-</div>
+    <form action="/pinger" method="post" data-turbo-stream>
+        <button type="submit">Ping</button>
+    </form>
+    <div>
+        <p>Ping times</p>
+        <ol id="pings"></ol>
+    </div>
 </section>
 
 </body>

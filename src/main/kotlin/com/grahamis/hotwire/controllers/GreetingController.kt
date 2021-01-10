@@ -10,6 +10,7 @@ class GreetingController {
 
     @RequestMapping("/greeting")
     fun greeting(model: Model, @RequestParam params: Map<String, String>): String {
+        if (params.getOrDefault("sleep", "false").toBoolean()) Thread.sleep(1000) // show Turbo Drive progress bar
         model.addAttribute("person", params.getOrDefault("person", "world"))
         return "greeting"
     }
