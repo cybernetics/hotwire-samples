@@ -1,16 +1,16 @@
 package com.grahamis.hotwire.controllers
 
 import com.grahamis.CustomMediaType
+import kotlinx.coroutines.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
-import reactor.core.publisher.Mono
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
@@ -22,6 +22,7 @@ import kotlin.time.measureTime
 
 @RequestMapping("/pinger")
 @Controller
+@ExperimentalTime
 class PingController {
     @Value("\${ping.hostname:127.0.0.1}")
     private val hostname: String = "127.0.0.1"
@@ -33,47 +34,52 @@ class PingController {
     @Autowired(required = false)
     private var socket: Socket? = null
 
-    @ExperimentalTime
-    @PostMapping(produces = [CustomMediaType.TURBO_STREAM_VALUE, MediaType.TEXT_HTML_VALUE])
+    @PostMapping(produces = [CustomMediaType.TURBO_STREAM_VALUE])
     @ResponseBody
-    fun pinger(): Mono<ResponseEntity<String>> {
-        val headers = HttpHeaders()
-
-        headers.contentType = CustomMediaType.TURBO_STREAM
-
-        // socket will be a `@MockBean` during testing, null otherwise
-        return ping(socket ?: Socket()).map { duration ->
-            val pingTime = if (duration < 0) "timeout" else "$duration ms"
-            ResponseEntity
-                .ok()
-                .contentType(CustomMediaType.TURBO_STREAM)
-                .body(
-                    """
+    suspend fun pingerStream(): ResponseEntity<String> = ResponseEntity
+        .ok()
+        .contentType(CustomMediaType.TURBO_STREAM)
+        .body(
+            """
 <turbo-stream action="append" target="pings">
   <template>
-    <li>$pingTime</li>
+    <li>${pingTime()}</li>
   </template>
 </turbo-stream>
                 """.trimIndent()
-                )
-        }
+        )
+
+    @PostMapping(produces = [MediaType.TEXT_HTML_VALUE])
+    suspend fun pingerPage(model: Model): String {
+        model.addAttribute("pingTime", pingTime())
+        return "ping"
     }
 
-    @ExperimentalTime
-    fun ping(socket: Socket): Mono<Long> = Mono.create { sink ->
-        socket.use {
-            try {
-                sink.success(measureTime {
-                    socket.connect(InetSocketAddress(hostname, port))
-                    if (port != 0) { // don't do randomness fun for unit test scenarios
+    private suspend fun pingTime(): String {
+        // socket will be a `@MockBean` during testing, null otherwise
+        val duration = ping(socket ?: Socket())
+        return if (duration < 0) "timeout" else "$duration ms"
+    }
+
+    suspend fun ping(socket: Socket): Long = withContext(Dispatchers.IO) {
+        runCatching {
+            measureTime {
+                socket.use {
+                    it.connect(InetSocketAddress(hostname, port))
+
+                    /**
+                     * The following is purely for some randomness to simulate ping times.
+                     * The randomness doesn't occur for unit tests (as it uses a mocked Socket).
+                     * None of this sort of code would appear in a real app.
+                     */
+                    if (it::class == Socket::class) {
                         val sleep = Random.nextLong().absoluteValue % 10
-                        if (sleep % 5 == 0L) throw IOException() // force some timeouts now and then
-                        Thread.sleep(sleep)
+                        if (sleep % 5 == 0L)
+                            throw IOException() // force some timeouts now and then
+                        delay(sleep)
                     }
-                }.toLongMilliseconds())
-            } catch (e: IOException) {
-                sink.success(-1)
-            }
-        }
+                }
+            }.toLongMilliseconds()
+        }.getOrDefault(-1)
     }
 }

@@ -40,8 +40,12 @@
 
 <section>
     <h1>Pings section</h1>
-    <h2>Turbo Stream</h2>
-    <form action="/pinger" method="post" data-turbo-stream>
+    <h2>Regular Form</h2>
+    <form action="/pinger" method="post" data-turbo="false">
+        <button type="submit">Ping</button>
+    </form>
+    <h2>Turbo Stream (Form)</h2>
+    <form action="/pinger" method="post">
         <button type="submit">Ping</button>
     </form>
     <div>
