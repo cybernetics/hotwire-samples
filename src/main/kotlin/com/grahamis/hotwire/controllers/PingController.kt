@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.ResponseBody
 import java.io.IOException
 import java.net.InetSocketAddress
@@ -46,10 +47,10 @@ class PingController {
     <li>${pingTime()}</li>
   </template>
 </turbo-stream>
-                """.trimIndent()
+            """.trimIndent()
         )
 
-    @PostMapping(produces = [MediaType.TEXT_HTML_VALUE])
+    @RequestMapping(produces = [MediaType.TEXT_HTML_VALUE], method = [RequestMethod.GET, RequestMethod.POST])
     suspend fun pingerPage(model: Model): String {
         model.addAttribute("pingTime", pingTime())
         return "ping"
