@@ -1,6 +1,7 @@
-package com.grahamis.hotwire.controllers
+package com.grahamis.hotwire.controller
 
-import com.grahamis.*
+import com.grahamis.elementOfId
+import com.grahamis.getResponse
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired

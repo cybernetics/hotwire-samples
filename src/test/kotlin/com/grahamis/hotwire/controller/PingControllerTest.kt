@@ -1,10 +1,9 @@
-package com.grahamis.hotwire.controllers
+package com.grahamis.hotwire.controller
 
 import com.grahamis.CustomMediaType
 import com.grahamis.hasElement
+import com.grahamis.hotwire.service.PingService
 import com.grahamis.matches
-import kotlinx.coroutines.*
-import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.*
@@ -12,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.MockReset
+import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import java.io.IOException
+import java.net.InetSocketAddress
 import java.net.Socket
 import java.net.SocketAddress
 import kotlin.time.ExperimentalTime
@@ -30,23 +31,13 @@ class PingControllerTest {
     @MockBean(reset = MockReset.BEFORE)
     private lateinit var socket: Socket
 
+    @MockBean(reset = MockReset.BEFORE)
+    private lateinit var address: InetSocketAddress
+
+    @SpyBean(PingService::class)
+    private lateinit var pingService: PingService
+
     private val path = "/pinger"
-
-    @Test
-    fun `should ping`() {
-        mockSocketConnects()
-        Assertions.assertThat(
-            runBlocking { PingController().ping(socket) }
-        ).isGreaterThanOrEqualTo(0)
-    }
-
-    @Test
-    fun `should timeout`() {
-        mockSocketTimeout()
-        Assertions.assertThat(
-            runBlocking { PingController().ping(socket) }
-        ).isEqualTo(-1)
-    }
 
     @Test
     fun `should respond with a Turbo Stream ContentType`() {
