@@ -6,10 +6,10 @@
 <head>
     <title>Home</title>
     <script type="text/javascript">
-        if (window["WebSocket"] && Turbo) {
+        if (window["EventSource"] && Turbo) {
             Turbo.connectStreamSource(new EventSource("/load"));
         } else {
-            console.info("Turbo Streams over Web Socket not available");
+            console.info("Turbo Streams over SSE not available");
         }
     </script>
 </head>
