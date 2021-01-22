@@ -6,10 +6,10 @@
 <head>
     <title>Home</title>
     <script type="text/javascript">
-        if (window["EventSource"] && Turbo) {
+        if (window["EventSouce"] && window["Turbo"]) {
             Turbo.connectStreamSource(new EventSource("/load"));
         } else {
-            console.info("Turbo Streams over SSE not available");
+            console.warn("Turbo Streams over SSE not available");
         }
     </script>
 </head>
