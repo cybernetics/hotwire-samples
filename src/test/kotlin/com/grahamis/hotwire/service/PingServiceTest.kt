@@ -4,9 +4,8 @@ import kotlinx.coroutines.*
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.Mock
 import org.mockito.Mockito.*
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.mock.mockito.MockReset
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.io.IOException
 import java.net.InetSocketAddress
@@ -17,7 +16,7 @@ import kotlin.time.ExperimentalTime
 @ExperimentalTime
 @ExtendWith(SpringExtension::class)
 class PingServiceTest {
-    @MockBean(reset = MockReset.BEFORE)
+    @Mock
     private lateinit var socket: Socket
 
     private val path = "/pinger"
@@ -27,7 +26,7 @@ class PingServiceTest {
     fun `should ping`() {
         mockSocketConnects()
         Assertions.assertThat(
-            runBlocking { PingService().ping(socket, address) }
+            runBlocking { PingService(socket).ping(address) }
         ).isGreaterThanOrEqualTo(0)
     }
 
@@ -35,7 +34,7 @@ class PingServiceTest {
     fun `should timeout`() {
         mockSocketTimeout()
         Assertions.assertThat(
-            runBlocking { PingService().ping(socket, address) }
+            runBlocking { PingService(socket).ping(address) }
         ).isEqualTo(-1)
     }
 

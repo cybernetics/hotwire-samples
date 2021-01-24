@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.ResponseBody
 import java.net.InetSocketAddress
-import java.net.Socket
 import kotlin.time.ExperimentalTime
 
 @RequestMapping("/pinger")
@@ -28,10 +27,6 @@ class PingController {
 
     @Value("\${ping.port:8080}")
     private val port: Int = 8080
-
-    // Test will provide a `@MockBean`
-    @Autowired(required = false)
-    private var socket: Socket? = null
 
     // Test will provide a `@MockBean`
     @Autowired(required = false)
@@ -61,7 +56,6 @@ class PingController {
     private suspend fun pingTime(): String {
         // socket and address will be a `@MockBean` during testing (null otherwise), so create real ones here
         val duration = pingService.ping(
-            socket ?: Socket(),
             address ?: InetSocketAddress(hostname, port)
         )
         return if (duration < 0) "timeout" else "$duration ms"
