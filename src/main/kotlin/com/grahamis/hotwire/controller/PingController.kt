@@ -28,10 +28,6 @@ class PingController {
     @Value("\${ping.port:8080}")
     private val port: Int = 8080
 
-    // Test will provide a `@MockBean`
-    @Autowired(required = false)
-    private var address: InetSocketAddress? = null
-
     @PostMapping(produces = [CustomMediaType.TURBO_STREAM_VALUE])
     @ResponseBody
     suspend fun pingerStream(): ResponseEntity<String> = ResponseEntity
@@ -55,9 +51,7 @@ class PingController {
 
     private suspend fun pingTime(): String {
         // socket and address will be a `@MockBean` during testing (null otherwise), so create real ones here
-        val duration = pingService.ping(
-            address ?: InetSocketAddress(hostname, port)
-        )
+        val duration = pingService.ping(hostname, port)
         return if (duration < 0) "timeout" else "$duration ms"
     }
 }

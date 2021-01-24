@@ -25,12 +25,12 @@ class PingService() {
     }
 
     @ExperimentalTime
-    suspend fun ping(address: InetSocketAddress): Long = withContext(Dispatchers.IO) {
+    suspend fun ping(hostname: String, port: Int): Long = withContext(Dispatchers.IO) {
         val sock = socket ?: Socket()
         runCatching {
             measureTime {
                 sock.use {
-                    it.connect(address)
+                    it.connect(InetSocketAddress(hostname, port))
                     /**
                      * The following is purely for some randomness to simulate ping times.
                      * The randomness doesn't occur for unit tests (as it uses a mocked Socket).

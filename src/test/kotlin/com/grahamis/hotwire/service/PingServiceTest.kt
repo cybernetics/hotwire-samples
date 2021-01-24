@@ -8,7 +8,6 @@ import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.io.IOException
-import java.net.InetSocketAddress
 import java.net.Socket
 import java.net.SocketAddress
 import kotlin.time.ExperimentalTime
@@ -19,14 +18,14 @@ class PingServiceTest {
     @Mock
     private lateinit var socket: Socket
 
-    private val path = "/pinger"
-    val address = InetSocketAddress("localhost", 0)
+    private val hostname = "localhost"
+    private val port = 0
 
     @Test
     fun `should ping`() {
         mockSocketConnects()
         Assertions.assertThat(
-            runBlocking { PingService(socket).ping(address) }
+            runBlocking { PingService(socket).ping(hostname, port) }
         ).isGreaterThanOrEqualTo(0)
     }
 
@@ -34,7 +33,7 @@ class PingServiceTest {
     fun `should timeout`() {
         mockSocketTimeout()
         Assertions.assertThat(
-            runBlocking { PingService(socket).ping(address) }
+            runBlocking { PingService(socket).ping(hostname, port) }
         ).isEqualTo(-1)
     }
 
