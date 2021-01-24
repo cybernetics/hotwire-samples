@@ -18,25 +18,6 @@ class PingService {
             measureTime {
                 socket.use {
                     it.connect(address)
-
-                    /**
-                     * The following is purely for some randomness to simulate ping times.
-                     * The randomness doesn't occur for unit tests (as it uses a mocked Socket).
-                     * None of this sort of code would appear in a real app.
-                     */
-
-                    /**
-                     * The following is purely for some randomness to simulate ping times.
-                     * The randomness doesn't occur for unit tests (as it uses a mocked Socket).
-                     * None of this sort of code would appear in a real app.
-                     */
-
-                    /**
-                     * The following is purely for some randomness to simulate ping times.
-                     * The randomness doesn't occur for unit tests (as it uses a mocked Socket).
-                     * None of this sort of code would appear in a real app.
-                     */
-
                     /**
                      * The following is purely for some randomness to simulate ping times.
                      * The randomness doesn't occur for unit tests (as it uses a mocked Socket).
