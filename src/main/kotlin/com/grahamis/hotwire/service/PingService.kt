@@ -14,22 +14,21 @@ import kotlin.time.measureTime
 
 @Service
 class PingService() {
-    // Test will provide a `@MockBean`
-    @Autowired(required = false)
-    private var socket: Socket? = null
+    // This is TestOnly. A new Socket() is created each time in production.
+    private var testSocket: Socket? = null
 
     @TestOnly
-    @Autowired(required = false)
+    @Autowired(required = false)  // Test will provide a `@MockBean`
     constructor(socket: Socket) : this() {
-        this.socket = socket
+        this.testSocket = socket
     }
 
     @ExperimentalTime
     suspend fun ping(hostname: String, port: Int): Long = withContext(Dispatchers.IO) {
-        val sock = socket ?: Socket()
+        val socket = testSocket ?: Socket()
         runCatching {
             measureTime {
-                sock.use {
+                socket.use {
                     it.connect(InetSocketAddress(hostname, port))
                     /**
                      * The following is purely for some randomness to simulate ping times.
