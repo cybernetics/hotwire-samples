@@ -1,9 +1,7 @@
 package com.grahamis.hotwire.controller
 
 import com.grahamis.CustomMediaType
-import com.grahamis.hotwire.DefaultTemplateSelectorModifier
 import com.grahamis.hotwire.TemplateSelectorModifier
-import com.grahamis.hotwire.TurboStreamTemplateSelectorModifier
 import com.grahamis.hotwire.service.PingService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -18,14 +16,14 @@ import kotlin.time.ExperimentalTime
 @ExperimentalTime
 class PingController {
     @RequestMapping(produces = [CustomMediaType.TURBO_STREAM_VALUE])
-    suspend fun pingerStream(model: Model) = view(model, TurboStreamTemplateSelectorModifier)
+    suspend fun pingerStream(model: Model) = view(model, TemplateSelectorModifier.TurboStream)
 
     @RequestMapping(produces = [MediaType.TEXT_HTML_VALUE])
     suspend fun pingerPage(model: Model) = view(model)
 
     private suspend fun view(
         model: Model,
-        templateSelectorModifier: TemplateSelectorModifier = DefaultTemplateSelectorModifier
+        templateSelectorModifier: TemplateSelectorModifier = TemplateSelectorModifier.Default
     ): String {
         model.addAttribute("pingTime", pingTime())
         return templateSelectorModifier.modifyName("ping")
