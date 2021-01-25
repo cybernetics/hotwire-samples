@@ -2,6 +2,7 @@ package com.grahamis.hotwire.controller
 
 import com.grahamis.CustomMediaType
 import com.grahamis.hasElement
+import com.grahamis.hotwire.config.ThymeleafConfig
 import com.grahamis.hotwire.service.PingService
 import com.grahamis.matches
 import org.junit.jupiter.api.Test
@@ -12,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.MockReset
 import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
@@ -23,6 +25,7 @@ import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
 @ExtendWith(SpringExtension::class)
+@Import(ThymeleafConfig::class)
 @WebFluxTest(PingController::class)
 class PingControllerTest {
     @Autowired

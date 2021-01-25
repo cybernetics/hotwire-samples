@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
-<head th:insert="fragments/html-head :: html-head"></head>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head data-th-insert="fragments/html-head :: html-head"></head>
 <head><title>Greetings</title></head>
-<!--/*@thymesVar id="pingTime" type="String"*/-->
 <body>
 <h1>The Ping Page</h1>
-<p>Ping time: <span id="pingTime" th:text="${pingTime}">X ms</span></p>
+<p>Ping time: <span id="pingTime">[[${pingTime}]]</span></p>
 <a href="javascript:history.back()">🔙 Back</a>
 </body>
 </html>

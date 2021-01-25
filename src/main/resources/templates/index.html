@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="${lang}"
-      th:lang="${lang}" th:with="lang=${#locale.language}"
-      xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:replace="~{fragments/html-head :: html-head}"></head>
+      xmlns="http://www.w3.org/1999/xhtml"
+      data-th-lang="${lang}" data-th-with="lang=${#locale.language}">
+<head data-th-replace="~{fragments/html-head :: html-head}"></head>
 <head>
     <title>Home</title>
     <script type="text/javascript">
-        if (window["EventSouce"] && window["Turbo"]) {
+        if (window["EventSource"] && window["Turbo"]) {
             Turbo.connectStreamSource(new EventSource("/load"));
         } else {
             console.warn("Turbo Streams over SSE not available");

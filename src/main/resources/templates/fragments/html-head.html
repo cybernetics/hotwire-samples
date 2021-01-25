@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="${lang}"
-      th:lang="${lang}"
-      th:with="lang=${#locale.language}" xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="html-head">
+      xmlns="http://www.w3.org/1999/xhtml"
+      data-th-lang="${lang}" data-th-with="lang=${#locale.language}">
+<head data-th-fragment="html-head">
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1" name="viewport"/>
 
