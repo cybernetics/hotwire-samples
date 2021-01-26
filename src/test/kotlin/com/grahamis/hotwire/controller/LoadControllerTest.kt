@@ -1,5 +1,6 @@
 package com.grahamis.hotwire.controller
 
+import com.grahamis.hotwire.domain.SystemLoadAverage
 import com.grahamis.hotwire.service.LoadService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -26,7 +27,7 @@ class LoadControllerTest {
 
     @Test
     fun `should respond with a SSE ContentType`() {
-        `when`(loadService.stream()).thenReturn("now: 0.000".toMono().toFlux())
+        `when`(loadService.streamBlocking()).thenReturn(SystemLoadAverage(0.0).toMono().toFlux())
         response().expectHeader().contentTypeCompatibleWith(MediaType.TEXT_EVENT_STREAM)
     }
 
