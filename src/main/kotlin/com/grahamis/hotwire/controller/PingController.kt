@@ -15,6 +15,15 @@ import kotlin.time.ExperimentalTime
 @Controller
 @ExperimentalTime
 class PingController {
+    @Autowired
+    private lateinit var pingService: PingService
+
+    @Value("\${ping.hostname:127.0.0.1}")
+    private val hostname: String = "127.0.0.1"
+
+    @Value("\${ping.port:8080}")
+    private val port: Int = 8080
+
     @RequestMapping(produces = [CustomMediaType.TURBO_STREAM_VALUE])
     suspend fun pingerStream(model: Model) = view(model, TemplateSelectorModifier.TurboStream)
 
@@ -28,15 +37,6 @@ class PingController {
         model.addAttribute("pingTime", pingTime())
         return templateSelectorModifier.modifyName("ping")
     }
-
-    @Autowired
-    private lateinit var pingService: PingService
-
-    @Value("\${ping.hostname:127.0.0.1}")
-    private val hostname: String = "127.0.0.1"
-
-    @Value("\${ping.port:8080}")
-    private val port: Int = 8080
 
     private suspend fun pingTime(): String {
         val duration = pingService.ping(hostname, port)
