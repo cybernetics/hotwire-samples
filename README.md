@@ -6,4 +6,4 @@ See accompanying blog post at https://delitescere.medium.com/hotwire-html-over-t
 
 ## Running locally
 
-`((while ! nc -z localhost 8080; do sleep 1; done; open http://localhost:8080) &); ./gradlew bootRun`
+macOS: `((while ! nc -z localhost 8080; do sleep 1; done; open http://localhost:8080) &); ./gradlew bootRun`
